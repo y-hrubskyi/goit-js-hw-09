@@ -30,6 +30,7 @@ function onPromiseFormRefSubmit(event) {
     if (i === Number(amount))
       setTimeout(() => {
         button.disabled = false;
+        promiseFormRef.reset();
       }, currentDelay + Number(step));
   }
 }

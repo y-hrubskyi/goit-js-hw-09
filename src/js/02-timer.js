@@ -55,7 +55,7 @@ function onStartBtnClick() {
   intervalId = setInterval(() => {
     const difference = selectedDate - Date.now();
     if (difference < 0) {
-      clearInterval(intervalId);
+      onStopBtnClick();
       Notify.success('The END');
       return;
     }

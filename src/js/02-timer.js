@@ -33,7 +33,7 @@ const options = {
     if (selectedDate - Date.now() <= 0) {
       refs.startBtn.disabled = true;
       refs.stopBtn.disabled = true;
-      showNotify();
+      showFailureNotify();
       return;
     }
     refs.startBtn.disabled = false;

@@ -12,9 +12,11 @@ function onPromiseFormRefSubmit(event) {
     delay: { value: delay },
     step: { value: step },
     amount: { value: amount },
+    button,
   } = event.currentTarget.elements;
+  button.disabled = true;
 
-  for (let i = 1; i <= amount; i += 1) {
+  for (let i = 1; i <= Number(amount); i += 1) {
     const currentDelay = Number(delay) + Number(step) * (i - 1);
 
     createPromise(i, currentDelay)
@@ -24,6 +26,11 @@ function onPromiseFormRefSubmit(event) {
       .catch(({ position, delay }) => {
         Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
       });
+
+    if (i === Number(amount))
+      setTimeout(() => {
+        button.disabled = false;
+      }, currentDelay + Number(step));
   }
 }
 

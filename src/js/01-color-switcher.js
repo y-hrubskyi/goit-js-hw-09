@@ -8,19 +8,20 @@ refs.startBtn.addEventListener('click', onStartBtnClick);
 refs.stopBtn.addEventListener('click', onStopBtnClick);
 
 function onStartBtnClick() {
-  refs.startBtn.disabled = true;
-  refs.stopBtn.disabled = false;
-
+  changeBtnDisabled();
   intervalId = setInterval(() => {
     document.body.style.backgroundColor = getRandomHexColor();
   }, 1000);
 }
 
 function onStopBtnClick() {
-  refs.stopBtn.disabled = true;
-  refs.startBtn.disabled = false;
-
+  changeBtnDisabled();
   clearInterval(intervalId);
+}
+
+function changeBtnDisabled() {
+  refs.startBtn.disabled = !refs.startBtn.disabled;
+  refs.stopBtn.disabled = !refs.stopBtn.disabled;
 }
 
 function getRandomHexColor() {

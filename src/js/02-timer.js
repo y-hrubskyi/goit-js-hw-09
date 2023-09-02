@@ -1,10 +1,9 @@
 //libraries
 import flatpickr from 'flatpickr';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Notify } from 'notiflix';
 
 //styles
 import 'flatpickr/dist/flatpickr.min.css';
-import 'notiflix/dist/notiflix-3.2.6.min.css';
 
 //code
 const refs = {
@@ -30,7 +29,7 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     selectedDate = selectedDates[0];
-    if (selectedDate - Date.now() <= 0) {
+    if (selectedDate <= Date.now()) {
       refs.startBtn.disabled = true;
       refs.stopBtn.disabled = true;
       showFailureNotify();
@@ -42,40 +41,40 @@ const options = {
 flatpickr(refs.datetimeInput, options);
 
 function onStartBtnClick() {
-  if (selectedDate - Date.now() <= 0) {
+  if (selectedDate <= Date.now()) {
     refs.startBtn.disabled = true;
     showFailureNotify();
     return;
   }
 
-  refs.startBtn.disabled = true;
-  refs.stopBtn.disabled = false;
-  refs.datetimeInput.disabled = true;
-
+  changeDisabled();
   intervalId = setInterval(() => {
-    const difference = selectedDate - Date.now();
-    if (difference < 0) {
+    if (selectedDate <= Date.now()) {
       onStopBtnClick();
       Notify.success('The END');
       return;
     }
-    const convertedTime = convertMs(difference);
+    const convertedTime = convertMs(selectedDate - Date.now());
     renderTime(convertedTime);
   }, 1000);
 }
 
 function onStopBtnClick() {
   clearInterval(intervalId);
-  refs.stopBtn.disabled = true;
-  refs.startBtn.disabled = false;
-  refs.datetimeInput.disabled = false;
+  changeDisabled();
+}
+
+function changeDisabled() {
+  refs.stopBtn.disabled = !refs.stopBtn.disabled;
+  refs.startBtn.disabled = !refs.startBtn.disabled;
+  refs.datetimeInput.disabled = !refs.datetimeInput.disabled;
 }
 
 function renderTime({ days, hours, minutes, seconds }) {
-  refs.daysField.textContent = pad(days);
-  refs.hoursField.textContent = pad(hours);
-  refs.minutesField.textContent = pad(minutes);
-  refs.secondsField.textContent = pad(seconds);
+  refs.daysField.textContent = addLeadingZero(days);
+  refs.hoursField.textContent = addLeadingZero(hours);
+  refs.minutesField.textContent = addLeadingZero(minutes);
+  refs.secondsField.textContent = addLeadingZero(seconds);
 }
 
 function convertMs(ms) {
@@ -96,6 +95,6 @@ function showFailureNotify() {
   Notify.failure('Please choose a date in the future');
 }
 
-function pad(time) {
-  return String(time).padStart(2, '0');
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
 }
